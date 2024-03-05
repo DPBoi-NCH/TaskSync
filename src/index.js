@@ -10,6 +10,15 @@ root.render(
     <App />
   </React.StrictMode>
 );
+// Gets Item from localStorage
+let getItem = (val) => {
+  return JSON.parse(localStorage.getItem(val));
+};
+const props = {
+  todos: getItem('todos'),
+  finished: getItem('finished'),
+  done: getItem('done')
+};
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
