@@ -24,21 +24,31 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
     <title>React App</title>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <h2>Checklist</h2>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-    Wassup!!!
+    <form id="checklistForm">
+        <ul id="checklist">
+            <li><input type="checkbox" id="item1" name="item1"><label for="item1">Item 1</label></li>
+            <li><input type="checkbox" id="item2" name="item2"><label for="item2">Item 2</label></li>
+            <li><input type="checkbox" id="item3" name="item3"><label for="item3">Item 3</label></li>
+            <!-- Add more items as needed -->
+        </ul>
+        <button type="button" onclick="addItem()">Add Item</button>
+    </form>
+    
+    <script>
+    function addItem() {
+        var newItemIndex = document.getElementById("checklist").getElementsByTagName("li").length + 1;
+        var newItem = document.createElement("li");
+        newItem.innerHTML = '<input type="checkbox" id="item' + newItemIndex + '" name="item' + newItemIndex + '"><label for="item' + newItemIndex + '">Item ' + newItemIndex + '</label>';
+        document.getElementById("checklist").appendChild(newItem);
+    }
+    </script>
+    
   </body>
 </html>
