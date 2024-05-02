@@ -20,9 +20,7 @@ export const doSignInWithEmailAndPassword = (email, password) => {
 export const doSignInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
-  const user = result.user;
-
-  // add user to firestore
+  return result;
 };
 
 export const doSignOut = () => {
