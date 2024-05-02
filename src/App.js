@@ -1,6 +1,6 @@
 import React from 'react';
-import SignUp from './SignUp';
-import SignIn from './SignIn';
+import SignUp from './components/SignUp';
+import SignIn from './components/SignIn';
 
 import './App.css';
 import firebase from 'firebase/app';
