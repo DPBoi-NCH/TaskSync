@@ -1,14 +1,18 @@
 import React from 'react';
-import SignUp from './components/SignUp.js';
-import SignIn from './components/SignIn.js';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Home from './components/Home';
+import SignUp from './components/SignUp';
+import SignIn from './components/SignIn';
 
-function App() {
+const App = () => {
   return (
-    <div>
-      <h1>Welcome to My Checklist App</h1>
-      <SignUp />
-      <SignIn />
-    </div>
+    <Router>
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route path="/signup" component={SignUp} />
+        <Route path="/signin" component={SignIn} />
+      </Switch>
+    </Router>
   );
 }
 
