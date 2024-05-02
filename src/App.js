@@ -3,7 +3,8 @@ import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 
 import './App.css';
-// import firebase from 'firebase/compat/app';
+import { initializeApp } from 'firebase/app';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/messaging';
@@ -21,7 +22,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);
-// const auth = getAuth(app);
+const auth = getAuth(app);
 
 function App() {
   return (
