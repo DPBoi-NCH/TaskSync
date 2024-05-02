@@ -1,23 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import {Link} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
 
-const App = () => {
+const Home = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" exact element={<Home />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/signin" element={<SignIn />} />
-      </Routes>
-    </Router>
-  );
-}
-
-const Home = () =>{
-  <div>
+    <div>
       <h1>Welcome to TaskSync</h1>
       <div style={{ float: 'right' }}>
         <Link to="/signin">
@@ -28,6 +16,19 @@ const Home = () =>{
         </Link>
       </div>
     </div>
-}
+  );
+};
+
+const App = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signin" element={<SignIn />} />
+      </Routes>
+    </Router>
+  );
+};
 
 export default App;
