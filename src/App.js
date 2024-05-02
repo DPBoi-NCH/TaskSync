@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './Home';
+// import Home from './Home';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
 
@@ -14,6 +14,20 @@ const App = () => {
       </Routes>
     </Router>
   );
+}
+
+const Home = () =>{
+  <div>
+      <h1>Welcome to TaskSync</h1>
+      <div style={{ float: 'right' }}>
+        <Link to="/signin">
+          <button>Sign In</button>
+        </Link>
+        <Link to="/signup">
+          <button>Sign Up</button>
+        </Link>
+      </div>
+    </div>
 }
 
 export default App;
