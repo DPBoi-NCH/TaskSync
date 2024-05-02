@@ -1,34 +1,38 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-// import SignUp from './SignUp';
-// import SignIn from './SignIn';
+import Login from "./components/auth/login";
+import Register from "./components/auth/register";
 
-const Home = () => {
-  return (
-    <div>
-      <h1>Welcome to TaskSync</h1>
-      {/* <div style={{ float: 'right' }}>
-        <Link to="/signin">
-          <button>Sign In</button>
-        </Link>
-        <Link to="/signup">
-          <button>Sign Up</button>
-        </Link>
-      </div> */}
-    </div>
-  );
-};
+import Header from "./components/header";
+import Home from "./components/home";
 
-const App = () => {
+import { AuthProvider } from "./contexts/authContext";
+import { useRoutes } from "react-router-dom";
+
+function App() {
+  const routesArray = [
+    {
+      path: "*",
+      element: <Login />,
+    },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/register",
+      element: <Register />,
+    },
+    {
+      path: "/home",
+      element: <Home />,
+    },
+  ];
+  let routesElement = useRoutes(routesArray);
   return (
-    <Router>
-      <Routes>
-        <Route path="/" exact element={<Home />} />
-        {/* <Route path="/signup" element={<SignUp />} /> */}
-        {/* <Route path="/signin" element={<SignIn />} /> */}
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Header />
+      <div className="w-full h-screen flex flex-col">{routesElement}</div>
+    </AuthProvider>
   );
-};
+}
 
 export default App;

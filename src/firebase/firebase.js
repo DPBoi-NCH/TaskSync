@@ -1,8 +1,7 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase.auth";
 
 const firebaseConfig = {
-  // Your Firebase config
   apiKey: "AIzaSyAA8rKErIIVtaUrcwWRu-JPfJTaPN_UVOA",
   authDomain: "tasksync-sp.firebaseapp.com",
   databaseURL: "https://tasksync-sp-default-rtdb.firebaseio.com",
@@ -13,8 +12,7 @@ const firebaseConfig = {
   measurementId: "G-8LR02CMPLG"
 };
 
-// Initialize Firebase app
-const firebaseApp = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app)
 
-// Export Firebase services
-export const auth = getAuth(firebaseApp);
+export { app, auth };
