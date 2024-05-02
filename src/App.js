@@ -22,11 +22,13 @@ const Home = () => {
 const App = () => {
   return (
     <Router>
+      <div className="App">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
       </Routes>
+      </div>
     </Router>
   );
 };
