@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import 'firebase/auth';
+import { auth } from '../firebase'; // Adjust the path as needed
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -9,7 +7,7 @@ const SignUp = () => {
 
   const handleSignUp = async () => {
     try {
-      await firebase.auth().createUserWithEmailAndPassword(email, password);
+      await createUserWithEmailAndPassword(auth, email, password);
       // User signed up successfully
     } catch (error) {
       console.error('Error signing up:', error.message);
