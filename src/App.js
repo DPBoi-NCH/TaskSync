@@ -7,14 +7,14 @@ const Home = () => {
   return (
     <div>
       <h1>Welcome to TaskSync</h1>
-      <div style={{ float: 'right' }}>
+      {/* <div style={{ float: 'right' }}>
         <Link to="/signin">
           <button>Sign In</button>
         </Link>
         <Link to="/signup">
           <button>Sign Up</button>
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 };
