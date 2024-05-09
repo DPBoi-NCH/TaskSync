@@ -2,42 +2,45 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { firestore } from '../firebase-config';
 import { collection, addDoc } from 'firebase/firestore';
-import { useAuth } from '../context/AuthContext'; // Ensure this is correctly imported
+import { useAuth } from '../context/AuthContext'; // Importing useAuth from context
 
 function CreateChecklist() {
-    const { currentUser } = useAuth();
-    const navigate = useNavigate();
-    const [title, setTitle] = useState('');
-    const [tasks, setTasks] = useState([{ description: '', dueDate: '' }]);
+    const { currentUser } = useAuth(); // Accessing the current user from the Auth context
+    const navigate = useNavigate(); // Hook for navigation
+    const [title, setTitle] = useState(''); // State to hold the title of the checklist
+    const [tasks, setTasks] = useState([{ description: '', dueDate: '' }]); // State to hold tasks with description and due date
 
+    // Function to add a new task to the list
     const handleAddTask = () => {
         setTasks([...tasks, { description: '', dueDate: '' }]);
     };
 
+    // Function to handle changes to task fields
     const handleTaskChange = (index, field, value) => {
         const newTasks = tasks.map((task, i) => {
             if (i === index) {
-                return { ...task, [field]: value };
+                return { ...task, [field]: value }; // Update the specific task's field
             }
             return task;
         });
         setTasks(newTasks);
     };
 
+    // Function to handle checklist submission
     const handleSubmit = async () => {
         if (!title || tasks.some(task => !task.description || !task.dueDate)) {
-            alert('Please fill out all fields.');
+            alert('Please fill out all fields.'); // Ensure all fields are filled
             return;
         }
         try {
             await addDoc(collection(firestore, 'checklists'), {
                 title,
                 tasks,
-                userId: currentUser.uid
+                userId: currentUser.uid // Include the user ID to link the checklist to the user
             });
-            navigate('/');
+            navigate('/'); // Navigate to the homepage after successful creation
         } catch (error) {
-            console.error('Error creating checklist:', error);
+            console.error('Error creating checklist:', error); // Log errors if the creation fails
             alert('Failed to create checklist.');
         }
     };

@@ -2,25 +2,38 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { firestore } from '../firebase-config';
-import { collection, query, where, onSnapshot, doc, updateDoc} from 'firebase/firestore';
+import { collection, query, where, onSnapshot, doc, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
 
 function HomePage() {
     const { currentUser } = useAuth();
     const navigate = useNavigate();
     const [checklists, setChecklists] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!currentUser) {
-            navigate('/signin');
+        if (!currentUser && !loading) {  // Check if there's no user and loading is done
+            navigate('/logout');
             return;
         }
-        const q = query(collection(firestore, 'checklists'), where('userId', '==', currentUser.uid));
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const lists = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setChecklists(lists);
-        });
-        return () => unsubscribe();
-    }, [currentUser, navigate]);
+        
+        if (currentUser) {
+            const q = query(collection(firestore, 'checklists'), where('userId', '==', currentUser.uid));
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                const lists = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setChecklists(lists);
+                setLoading(false);  // Set loading to false once data is fetched
+            }, error => {
+                console.error("Error fetching checklists:", error);
+                setLoading(false);  // Ensure loading is set to false even on error
+            });
+
+            return () => unsubscribe();  // Cleanup subscription on unmount
+        }
+    }, [currentUser, navigate, loading]);
+
+    if (loading) {
+        return <div>Loading...</div>;  // Display loading indicator while loading
+    }
 
     const handleShare = async (checklistId) => {
         const checklistLink = `${window.location.origin}/shared-checklist/${checklistId}`;
@@ -33,27 +46,28 @@ function HomePage() {
         }
     };
 
-    const toggleTaskCompletion = async (checklistId, task) => {
-        const taskIndex = checklists.findIndex(cl => cl.id === checklistId);
-        const tasks = [...checklists[taskIndex].tasks];
-        const taskIdx = tasks.findIndex(t => t.description === task.description && t.dueDate === task.dueDate);
-        tasks[taskIdx] = { ...tasks[taskIdx], completed: !tasks[taskIdx].completed };
-
-        const checklistDoc = doc(firestore, 'checklists', checklistId);
-        await updateDoc(checklistDoc, {
-            tasks: tasks
-        });
+    const toggleTaskCompletion = async (checklistId, taskIndex) => {
+        const checklistRef = doc(firestore, 'checklists', checklistId);
+        const checklistSnap = await getDoc(checklistRef);
+        if (checklistSnap.exists()) {
+            const tasks = [...checklistSnap.data().tasks];
+            tasks[taskIndex] = { ...tasks[taskIndex], completed: !tasks[taskIndex].completed };
+            await updateDoc(checklistRef, { tasks });
+        }
     };
 
-    const deleteTask = async (checklistId, task) => {
-        const taskIndex = checklists.findIndex(cl => cl.id === checklistId);
-        const tasks = [...checklists[taskIndex].tasks];
-        const updatedTasks = tasks.filter(t => t !== task);
+    const deleteTask = async (checklistId, taskIndex) => {
+        const checklistRef = doc(firestore, 'checklists', checklistId);
+        const checklistSnap = await getDoc(checklistRef);
+        if (checklistSnap.exists()) {
+            const tasks = [...checklistSnap.data().tasks];
+            tasks.splice(taskIndex, 1);  // Remove the task by index
+            await updateDoc(checklistRef, { tasks });
+        }
+    };
 
-        const checklistDoc = doc(firestore, 'checklists', checklistId);
-        await updateDoc(checklistDoc, {
-            tasks: updatedTasks
-        });
+    const deleteChecklist = async (checklistId) => {
+        await deleteDoc(doc(firestore, 'checklists', checklistId));
     };
 
     return (
@@ -69,14 +83,17 @@ function HomePage() {
                     <ul>
                         {checklist.tasks.map((task, index) => (
                             <li key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-                                <button onClick={() => toggleTaskCompletion(checklist.id, task)} style={{ color: task.completed ? 'grey' : 'green' }}>✓</button>
+                                <button onClick={() => toggleTaskCompletion(checklist.id, index)} style={{ color: task.completed ? 'grey' : 'green' }}>✓</button>
                                 {task.description} - Due: {new Date(task.dueDate).toLocaleString()}
-                                <button onClick={() => deleteTask(checklist.id, task)} style={{ color: 'red' }}>✖</button>
+                                <button onClick={() => deleteTask(checklist.id, index)} style={{ color: 'red' }}>✖</button>
                             </li>
                         ))}
                     </ul>
-                    <button onClick={() => handleShare(checklist.id)} style={{ marginTop: '10px' }}>
+                    <button onClick={() => handleShare(checklist.id)} style={{ margin: '10px' }}>
                         Share
+                    </button>
+                    <button onClick={() => deleteChecklist(checklist.id)} style={{ color: 'red', margin: '10px' }}>
+                        Delete Checklist
                     </button>
                 </div>
             )) : (
